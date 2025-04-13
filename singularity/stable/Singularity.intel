@@ -1,0 +1,103 @@
+Bootstrap: docker
+From: ubuntu:20.04
+Stage: os
+
+%post
+export TZ=Australia/Melbourne
+
+%labels
+    Author matthew.cantele@gmail.com
+    Version v1.0
+    MyLabel CGEPack with Focal Fossa base
+    org.label-schema.license GPL-2.0
+
+%files
+    #/home/mpc/src/teems/teems-solver/builds/focal_v2 /home/teems-solver/solver
+    #/tmp/Singularity.intel /home/teems-solver
+    /tmp/solver /home/teems-solver/solver
+    /tmp/tarballs /home/teems-solver/tarballs
+
+%environment
+    export SINGULARITY_MPICH_DIR=$MPICH_DIR
+    export SINGULARITYENV_APPEND_PATH=$MPICH_DIR/bin
+    export SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$MPICH_DIR/lib
+    export SINGULARITY_OMPI_DIR=$OMPI_DIR
+    export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
+    export SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
+    export PATH="/home/teems-solver/lib/mpi/bin:$PATH"
+
+%post
+    apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils locales \
+    && echo "LC_ALL=en_US.UTF-8" >> /etc/environment \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+    && echo "LANG=en_US.UTF-8" > /etc/locale.conf \
+    && locale-gen en_US.UTF-8 \
+    && apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential gfortran python3 python3-pip python3-distutils python-setuptools libblas-dev libopenblas-dev libx11-dev
+
+# TEEMS-specific packages
+    export BUILD=/home/teems-solver
+    export PETSC_ARCH=focal
+    export PETSC_VERSION=3.14.3
+    export OPENMPI_VERSION=4.1.1
+    export MPICH_VERSION=3.4.2
+    export UCX_VERSION=1.11.0
+    export MA48_VERSION=2.2.0
+    export MA51_VERSION=1.0.0
+
+# libraries directory
+    mkdir $BUILD/lib $BUILD/lib/ucx $BUILD/lib/mpi $BUILD/tmp
+
+# UCX install
+    tar xfz $BUILD/tarballs/ucx/ucx-$UCX_VERSION.tar.gz -C $BUILD/tmp/ \
+    && cd $BUILD/tmp/ucx-$UCX_VERSION \
+    && ./contrib/configure-release --prefix=$BUILD/lib/ucx/install \
+    && make -j8 install
+
+# OPENMPI
+    tar xfz $BUILD/tarballs/openmpi/openmpi-$OPENMPI_VERSION.tar.gz -C $BUILD/tmp/ \
+    && cd $BUILD/tmp/openmpi-$OPENMPI_VERSION \
+    && ./configure --prefix=$BUILD/lib/mpi \
+    && make all install
+
+# MPICH install 
+    tar xfz $BUILD/tarballs/mpich/mpich-$MPICH_VERSION.tar.gz -C $BUILD/tmp/ \
+    && cd $BUILD/tmp/mpich-$MPICH_VERSION \
+    && ./configure --prefix=$BUILD/lib/mpi --with-ucx=$BUILD/lib/ucx/install \
+    && make \
+    && make install \
+    && export PATH="$BUILD/lib/mpi/bin:$PATH"
+
+# PETSC
+    tar xfz $BUILD/tarballs/petsc/petsc-$PETSC_VERSION.tar.gz -C $BUILD/lib/ \
+    && mv $BUILD/lib/petsc-$PETSC_VERSION $BUILD/lib/petsc \
+    && cd $BUILD/lib/petsc \
+    && ldconfig \
+    && pip3 install --no-cache-dir pandas toolz \
+    && python3 ./config/configure.py --configModules=PETSc.Configure --optionsModule=config.compilerOptions -configModules=PETSc.Configure -optionsModule=config.compilerOptions -with-debugging=0 -with-mpi-dir=$BUILD/lib/mpi -with-afterimage COPTFLAGS="-O3 -march=p4 -mtune=p4" FOPTFLAGS="-O3 -qarch=p4 -qtune=p4" -with-shared-libraries=0 PETSC_ARCH=$PETSC_ARCH PETSC_DIR=$PWD \
+    && make PETSC_DIR=$PWD PETSC_ARCH=$PETSC_ARCH all
+
+# hsl
+    cd $BUILD/lib \
+    && tar xfz $BUILD/tarballs/hsl/ma48-$MA48_VERSION.tar.gz -C $BUILD/lib/ \
+    && mv ma48-$MA48_VERSION/ ma48 \
+    && cd ma48 \
+    && ./configure \
+    && make \
+    && cd $BUILD/lib \
+    && tar xfz $BUILD/tarballs/hsl/ma51-$MA51_VERSION.tar.gz -C $BUILD/lib/ \
+    && mv ma51-$MA51_VERSION/ ma51 \
+    && cd ma51 \
+    && ./configure \
+    && make \
+
+# final build
+    cd $BUILD/solver \
+    && make clean \
+    && make
+
+# cleanup
+    rm -rf $BUILD/tarballs \
+    && rm -rf $BUILD/tmp
+
+# rm makefile, other files where possible
+# potentially remove all .c files prevent 

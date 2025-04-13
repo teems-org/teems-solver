@@ -1,0 +1,77 @@
+2013-03-26  Jonathan Hogg
+Version 2.2.0. Change calls to FD15 into F95 intrinsics.
+
+2007-03-13
+Version 2.1.0. Loops split just ahead of call of
+MA50B/BD to correct bug.
+
+2006-05-24
+Version 2.0.0. Sizes of CNTL, ICNTL, INFO, RINFO
+increased and ICNTL(10) and ICNTL(11) added.
+
+2006-05-24
+Version 1.2.0. INFO(4) from MA48A/AD now cannot exceed
+NE*2.
+
+2005-02-21
+Version 1.1.0. FD05 dependence changed to FD15.
+
+2004-07-12
+Version 1.0.0. Version numbering added.
+
+2002-12-06
+The test for convergence of iterative refinement changed to
+avoid any problem with comparisons of numbers held in registers.
+
+2001-08-09
+use of MC41 changed to MC71
+
+2001-02-12
+Corrections made to the copying of the permutations found
+by MA50A/AD in rectangular case.
+Commas added after 1P edit descriptors.
+Length of ICNTL5 corrected in MA48D/DD
+
+1996-09-07
+Resetting of IPTRD and IRN after call to MA50BD moved to
+immediately after the call so that they will be reset
+correctly in the event of an error return from MA50BD.
+
+1996-08-13
+Bug corrected in print statements at end of MA48BD and
+start of MA48CD.
+
+1996-02-14
+Third argument in calls to MA48DD changed to LA-NE.
+
+1995-11-01
+Temporary variable NP introduced to avoid PFORT warnings.
+
+1995-11-01
+IFLAG in MA48DD made of length 7.
+
+1995-10-04
+Redundant variables ONE removed.
+
+1994-12-12
+Calls of MC13D and MC21A changed to MC13DD and MC21AD
+
+1994-06-14
+Minor bugs in printing corrected.
+
+1994-06-14
+Minor bug rank calculation corrected.
+
+1993-12-10
+Minor bugs in printing corrected.
+
+1993-10-18
+Minor bug in MA48BD when ICNTL(3)=3 corrected.
+
+1993-11-24
+Some IVDEP comments added for speed on the Cray,
+some minor bugs fixed, defaults changed to BLAS 3 with block size
+32 and no amalgamation of blocks of the block triangular form.
+
+1993-05-20
+Original version
