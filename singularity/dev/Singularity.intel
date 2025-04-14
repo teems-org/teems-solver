@@ -108,13 +108,13 @@ Stage: os
     && cp -r ${BUILD}/tmp/hsl/ma51 ${BUILD}/lib \
     && cd ${BUILD}/lib/ma51 \
     && ./configure \
-    && make \
-    && cp -r ${BUILD}/tmp/hsl/mp48 ${BUILD}/lib \
-    && cd ${BUILD}/lib/mp48 \
-    && ./configure \
-    && make \
-    && cp ${BUILD}/tmp/hsl/mc66/src/hsl_mc66d.f90 ${BUILD}/solver \
-    && cp ${BUILD}/tmp/hsl/mc66/src/ddeps90.f90 ${BUILD}/solver 
+    && make
+    # && cp -r ${BUILD}/tmp/hsl/mp48 ${BUILD}/lib \
+    # && cd ${BUILD}/lib/mp48 \
+    # && ./configure \
+    # && make \
+    # && cp ${BUILD}/tmp/hsl/mc66/src/hsl_mc66d.f90 ${BUILD}/solver \
+    # && cp ${BUILD}/tmp/hsl/mc66/src/ddeps90.f90 ${BUILD}/solver 
 
 # final build
     cp -r ${BUILD}/tmp/solver ${BUILD} \
