@@ -2,20 +2,21 @@ Bootstrap: docker
 From: ubuntu:20.04
 Stage: os
 
-%post
-export TZ=Australia/Melbourne
-
 %labels
-    Author matthew.cantele@gmail.com
-    Version v1.0
-    MyLabel CGEPack with Focal Fossa base
-    org.label-schema.license GPL-2.0
+    org.label-schema.name "TEEMS solver Singularity Definition file"
+    org.label-schema.version "0.9"
+    org.label-schema.description "Inner Singularity build layer for TEEMS solver"
+    org.label-schema.author "Matthew Cantele <matthew.cantele@protonmail.com>"
+    org.label-schema.maintainer "Matthew Cantele <matthew.cantele@protonmail.com>"
+    org.label-schema.source "https://github.com/matthewcantele/teems-solver"
+    org.label-schema.licenses "GPLv3.0"
 
 %files
-    #/home/mpc/src/teems/teems-solver/builds/focal_v2 /home/teems-solver/solver
-    #/tmp/Singularity.intel /home/teems-solver
-    /tmp/solver /home/teems-solver/solver
-    /tmp/tarballs /home/teems-solver/tarballs
+    /tmp/src /home/teems-solver/src
+    /tmp/hsl/ma48 /home/teems-solver/tmp/hsl/ma48
+    /tmp/hsl/ma51 /home/teems-solver/tmp/hsl/ma51
+    /tmp/hsl/mc66 /home/teems-solver/tmp/hsl/mc66
+    /tmp/hsl/mp48 /home/teems-solver/tmp/hsl/mp48
 
 %environment
     export SINGULARITY_MPICH_DIR=$MPICH_DIR
@@ -32,72 +33,99 @@ export TZ=Australia/Melbourne
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
     && echo "LANG=en_US.UTF-8" > /etc/locale.conf \
     && locale-gen en_US.UTF-8 \
-    && apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential gfortran python3 python3-pip python3-distutils python-setuptools libblas-dev libopenblas-dev libx11-dev
+    && apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        build-essential \
+        gfortran \
+        python3 \
+        python3-pip \
+        python3-distutils \
+        python-setuptools \
+        libblas-dev \
+        libopenblas-dev \
+        libx11-dev \
+        git \
+        wget \
+        autoconf \
+        automake \
+        libtool
 
 # TEEMS-specific packages
     export BUILD=/home/teems-solver
     export PETSC_ARCH=focal
     export PETSC_VERSION=3.14.3
     export OPENMPI_VERSION=4.1.1
-    export MPICH_VERSION=3.4.2
-    export UCX_VERSION=1.11.0
-    export MA48_VERSION=2.2.0
-    export MA51_VERSION=1.0.0
+    export OPENMPI_BASE_VERSION=4.1
+    export MPICH_VERSION=4.1.2
 
 # libraries directory
-    mkdir $BUILD/lib $BUILD/lib/ucx $BUILD/lib/mpi $BUILD/tmp
+    mkdir -p ${BUILD}/tmp \
+        ${BUILD}/lib/ucx \
+        ${BUILD}/lib/mpi \
+        ${BUILD}/lib/ma48 \
+        ${BUILD}/lib/ma51
 
 # UCX install
-    tar xfz $BUILD/tarballs/ucx/ucx-$UCX_VERSION.tar.gz -C $BUILD/tmp/ \
-    && cd $BUILD/tmp/ucx-$UCX_VERSION \
-    && ./contrib/configure-release --prefix=$BUILD/lib/ucx/install \
+    cd ${BUILD}/tmp \
+    && git clone https://github.com/openucx/ucx.git \
+    && cd ucx \
+    && ./autogen.sh \
+    && ./contrib/configure-release --prefix=${BUILD}/lib/ucx/install \
     && make -j8 install
 
 # OPENMPI
-    tar xfz $BUILD/tarballs/openmpi/openmpi-$OPENMPI_VERSION.tar.gz -C $BUILD/tmp/ \
-    && cd $BUILD/tmp/openmpi-$OPENMPI_VERSION \
-    && ./configure --prefix=$BUILD/lib/mpi \
+    cd ${BUILD}/tmp \
+    && mkdir openmpi \
+    && cd openmpi \
+    && wget https://download.open-mpi.org/release/open-mpi/v${OPENMPI_BASE_VERSION}/openmpi-${OPENMPI_VERSION}.tar.gz \
+    && tar xfz openmpi-${OPENMPI_VERSION}.tar.gz --strip-components=1 \
+    && ./configure --prefix=${BUILD}/lib/mpi \
     && make all install
 
-# MPICH install 
-    tar xfz $BUILD/tarballs/mpich/mpich-$MPICH_VERSION.tar.gz -C $BUILD/tmp/ \
-    && cd $BUILD/tmp/mpich-$MPICH_VERSION \
-    && ./configure --prefix=$BUILD/lib/mpi --with-ucx=$BUILD/lib/ucx/install \
+# MPICH
+    cd ${BUILD}/tmp \
+    && mkdir mpich \
+    && cd mpich \
+    && wget https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz \
+    && tar xfz mpich-${MPICH_VERSION}.tar.gz --strip-components=1 \
+    && ./configure --prefix=${BUILD}/lib/mpi --with-ucx=${BUILD}/lib/ucx/install \
     && make \
     && make install \
-    && export PATH="$BUILD/lib/mpi/bin:$PATH"
+    && export PATH="${BUILD}/lib/mpi/bin:$PATH"
 
 # PETSC
-    tar xfz $BUILD/tarballs/petsc/petsc-$PETSC_VERSION.tar.gz -C $BUILD/lib/ \
-    && mv $BUILD/lib/petsc-$PETSC_VERSION $BUILD/lib/petsc \
-    && cd $BUILD/lib/petsc \
+    cd ${BUILD}/lib \
+    && git clone -b release https://gitlab.com/petsc/petsc.git petsc \
+    && cd petsc \
+    && git checkout v${PETSC_VERSION} \
     && ldconfig \
     && pip3 install --no-cache-dir pandas toolz \
-    && python3 ./config/configure.py --configModules=PETSc.Configure --optionsModule=config.compilerOptions -configModules=PETSc.Configure -optionsModule=config.compilerOptions -with-debugging=0 -with-mpi-dir=$BUILD/lib/mpi -with-afterimage COPTFLAGS="-O3 -march=p4 -mtune=p4" FOPTFLAGS="-O3 -qarch=p4 -qtune=p4" -with-shared-libraries=0 PETSC_ARCH=$PETSC_ARCH PETSC_DIR=$PWD \
-    && make PETSC_DIR=$PWD PETSC_ARCH=$PETSC_ARCH all
+    && python3 ./config/configure.py --configModules=PETSc.Configure --optionsModule=config.compilerOptions -configModules=PETSc.Configure -optionsModule=config.compilerOptions -with-debugging=0 -with-mpi-dir=${BUILD}/lib/mpi -with-afterimage COPTFLAGS="-O3 -march=p4 -mtune=p4" FOPTFLAGS="-O3 -qarch=p4 -qtune=p4" -with-shared-libraries=0 PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=$PWD \
+    && make PETSC_DIR=$PWD PETSC_ARCH=${PETSC_ARCH} all
 
 # hsl
-    cd $BUILD/lib \
-    && tar xfz $BUILD/tarballs/hsl/ma48-$MA48_VERSION.tar.gz -C $BUILD/lib/ \
-    && mv ma48-$MA48_VERSION/ ma48 \
-    && cd ma48 \
+    cp -r ${BUILD}/tmp/hsl/ma48 ${BUILD}/lib \
+    && cd ${BUILD}/lib/ma48 \
     && ./configure \
     && make \
-    && cd $BUILD/lib \
-    && tar xfz $BUILD/tarballs/hsl/ma51-$MA51_VERSION.tar.gz -C $BUILD/lib/ \
-    && mv ma51-$MA51_VERSION/ ma51 \
-    && cd ma51 \
+    && cp -r ${BUILD}/tmp/hsl/ma51 ${BUILD}/lib \
+    && cd ${BUILD}/lib/ma51 \
     && ./configure \
     && make \
+    && cp -r ${BUILD}/tmp/hsl/mp48 ${BUILD}/lib \
+    && cd ${BUILD}/lib/mp48 \
+    && ./configure \
+    && make \
+    && cp ${BUILD}/lib/mp48/src/hsl_mp48d.f90 ${BUILD}/src \
+    && cp ${BUILD}/lib/mp48/src/ddeps.f ${BUILD}/src \
+    && cp ${BUILD}/lib/mp48/src/hsl_mp01.mod ${BUILD}/src \
+    && cd ${BUILD}/src \
+    && chmod +x mp48_mod.sh \
+    && ./mp48_mod.sh \
+    && cp ${BUILD}/tmp/hsl/mc66/src/hsl_mc66d.f90 ${BUILD}/src \
+    && cp ${BUILD}/tmp/hsl/mc66/src/ddeps90.f90 ${BUILD}/src 
 
 # final build
-    cd $BUILD/solver \
-    && make clean \
-    && make
-
-# cleanup
-    rm -rf $BUILD/tarballs \
-    && rm -rf $BUILD/tmp
-
-# rm makefile, other files where possible
-# potentially remove all .c files prevent 
+    cd ${BUILD}/src \
+    && make \
+    && mv ${BUILD}/src ${BUILD}/solver \
+    && rm -rf ${BUILD}/tmp
