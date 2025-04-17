@@ -1,7 +1,7 @@
 # TEEMS solver
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/username/repo/releases)
+[![License](https://img.shields.io/badge/License-GPL-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.9-green.svg)](https://github.com/username/repo/releases)
 
 This repository contains files necessary to build the optimization solver used within the R package TEEMS. Select HSL libraries are required and must be obtained directly from HSL (https://www.hsl.rl.ac.uk/).
 
@@ -146,10 +146,10 @@ For more help, please check our [FAQ](docs/FAQ.md) or [open an issue](https://gi
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv3.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## Code authorship
-This work is the culmination of many years of efforts and collaborations. The C source code (src) and main build was written by Tom Kompas and Ha Van Pham. The binary parsing code was contributed by Martin Ingrahm. Finally, Matthew Cantele authored the Docker and Singularity scripts.
+This work is the culmination of many years of efforts and collaborations. The C source code (src) and main build was written by Tom Kompas and Ha Van Pham. The binary parsing code (bin_parser) was contributed by Martin Ingrahm. Finally, Matthew Cantele authored the Docker and Singularity scripts.
 
 ## Contact
 
