@@ -18,7 +18,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PATH="$PATH:/usr/local/go/bin" \
     SINGULARITY_VERSION=4.0.0 \
     GO_VERSION=1.24.2 \
-    RELEASE="stable" \
     PATH="$PATH:/usr/local/go/bin"
 
 RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
@@ -83,7 +82,7 @@ RUN mkdir -p /tmp/hsl/ma48 \
     && tar xfz /tmp/hsl/mp48.tar.gz --strip-components=1 -C /tmp/hsl/mp48
 
 # Inner layer: Singularity image build (copy from local machine into docker container)
-COPY ./singularity/${RELEASE}/Singularity.intel /tmp
+COPY ./singularity/Singularity.intel /tmp
 COPY ./src /tmp/src
 COPY ./bin_parser /home/bin_parser
 
@@ -94,4 +93,4 @@ WORKDIR /home/launchpad
 CMD ["/init"]
 
 # build with:
-# docker buildx build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" --load --allow security.insecure -t teems:beta -f ./docker/dev/Dockerfile .
+# docker buildx build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" --load --allow security.insecure -t teems:beta -f ./docker/Dockerfile .
