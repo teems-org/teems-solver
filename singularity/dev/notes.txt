@@ -1,1 +1,0 @@
-changes to gfortran from 20.04 to 22.04 require a fallow-argument-mismatch flag on mpich configure which then conflicts with the hsl builds.
