@@ -153,13 +153,6 @@ if __name__ == '__main__':
     split_sel_file = read_sel_file(lookup['.sel'])
     split_set_file = read_set_file(lookup['.set'])
 
-    #np.savez(join(target_dir, 'mds'), nsetspace=nsetspace, nvar=nvar,
-    #         nvarele=nvarele, nset=nset)
-    #np.savez(join(target_dir, 'bin'), xc=xc)
-    #np.savez(join(target_dir, 'var'), **split_var_file)
-    #np.savez(join(target_dir, 'sel'), **split_sel_file)
-    #np.savez(join(target_dir, 'set'), **split_set_file)
-
     # Also save csv versions
     for cur_name, cur_dict in zip(['var_csvs', 'sel_csvs', 'set_csvs'],
                                   [split_var_file, split_sel_file,

@@ -1,6 +1,3 @@
-# Change this as required.
-# Note that the path shouldn't contain spaces! (GNU Make is old!!)
-# eventually the destination path should be passed as env so no folder renaming is necessary
 SOLUTION_PATH=/home/launchpad/out/variables/bin/sol.
 OUTDATA_PATH=/home/launchpad/out/variables/bin
 GNU_CSPLIT=csplit
