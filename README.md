@@ -1,4 +1,4 @@
-# Software Package Name
+# TEEMS solver
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/username/repo/releases)
@@ -24,7 +24,7 @@ This repository contains files necessary to build the optimization solver used w
 
 The following must be installed/obtained prior to running the Docker build script:
 
-- Docker (Linux users must ensure that Docker can be run without sudo: https://docs.docker.com/engine/install/linux-postinstall/)
+- Docker
 - HSL library MA48 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/ma48.html
 - HSL library MA51 (version 1.0.0): https://www.hsl.rl.ac.uk/catalogue/ma51.html
 - HSL library HSL_MC66 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/hsl_mc66.html
@@ -32,50 +32,51 @@ The following must be installed/obtained prior to running the Docker build scrip
 
 ## Installation
 
-Instructions for installing your software package.
+Instructions for installing the TEEMS solver.
 
 ### Cloning the Repository
 
 ```bash
 # Clone the repository
-git clone https://github.com/username/repository.git
+git clone https://github.com/matthewcantele/teems-solver.git
 
 # Navigate to the project directory
-cd repository
+cd teems-solver
 ```
 
-### Installing Dependencies
+### Obtaining the HSL libraries
+The required HSL libraries must be requested: https://www.hsl.rl.ac.uk
+After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. This directory should contain the following files:
+
+- ma48-2.2.0.tar.gz
+- ma51-1.0.0.tar.gz
+- hsl_mc66-2.2.0.tar.gz
+- hsl_mp48-2.1.1.tar.gz
+
+### Prepare Docker engine
+Linux users must ensure that Docker can be run without invoking sudo: https://docs.docker.com/engine/install/linux-postinstall/.
+Due to the nature of the nested build, the following command must be run to allow for insecure builds. This is to allow for sudo level privileges within the nested containers (see e.g., https://docs.docker.com/reference/cli/docker/buildx/build/).
 
 ```bash
-# Example for a Python project
-pip install -r requirements.txt
-
-# Example for a Node.js project
-npm install
+# Enable insecure build
+docker buildx create --use --name insecure-builder --buildkitd-flags '--allow-insecure-entitlement security.insecure'
 ```
 
-### Configuration
+### Build the solver
+```bash
+# Builds the solver
+# Build time is approximately 1 hour depending on your local machine specs.
+# Note that you must be at the base of the teem-solver directory
+docker buildx build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" --load --allow security.insecure -t teems:latest -f ./docker/Dockerfile .
+```
 
-Describe any configuration steps required after installation:
-
-1. Copy the example configuration file:
-   ```bash
-   cp config.example.yml config.yml
-   ```
-
-2. Edit the configuration file with your preferred settings:
-   ```bash
-   nano config.yml
-   ```
-
-3. Set up environment variables (if applicable):
-   ```bash
-   export API_KEY=your_api_key
-   ```
+Once built, check for the Docker image
+```
+docker image ls
+```
 
 ## Usage
-
-Provide basic usage instructions for your software package:
+The TEEMS solver is most easily utilized in conjunction with the TEEMS R package (link). It can however be called on solver-ready files. A middle ground option also exists with the in-situ-solve option within the TEEMS R package.
 
 ```bash
 # Example command to run the software
@@ -119,10 +120,6 @@ client = feature.Client(config=config)
 result = client.advanced_process("input", extra_param=True)
 ```
 
-## API Documentation
-
-For detailed API documentation, please refer to [our documentation site](https://docs.example.com) or the [API Reference](docs/API.md).
-
 ## Contributing
 
 We welcome contributions to this project! Please follow these steps:
@@ -151,8 +148,11 @@ For more help, please check our [FAQ](docs/FAQ.md) or [open an issue](https://gi
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Code authorship
+This work is the culmination of many years of efforts and collaborations. The C source code (src) and main build was written by Tom Kompas and Ha Van Pham. The binary parsing code was contributed by Martin Ingrahm. Finally, Matthew Cantele authored the Docker and Singularity scripts.
+
 ## Contact
 
-- Project Maintainer: [Your Name](mailto:email@example.com)
-- Project Homepage: [https://github.com/username/repository](https://github.com/username/repository)
+- Project Maintainer: [Matthew Cantele](mailto:matthew.cantele@protonmail.com)
+- Project Homepage: [https://github.com/username/repository](https://github.com/matthewcantele/teems-solver)
 - Bug Reports: [https://github.com/username/repository/issues](https://github.com/username/repository/issues)
