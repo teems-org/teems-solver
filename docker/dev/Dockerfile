@@ -1,5 +1,13 @@
 # syntax=docker/dockerfile:1-labs
 
+LABEL org.label-schema.name="TEEMS solver Dockerfile"
+LABEL org.label-schema.version="0.9"
+LABEL org.label-schema.description="Outer Docker build layer for TEEMS solver"
+LABEL org.label-schema.author="Matthew Cantele <matthew.cantele@protonmail.com>"
+LABEL org.label-schema.maintainer="Matthew Cantele <matthew.cantele@protonmail.com>"
+LABEL org.label-schema.source="https://github.com/matthewcantele/teems-solver"
+LABEL org.label-schema.licenses="GPLv3.0"
+
 FROM ubuntu:22.04
 ARG PATH_HSL_MA48
 ARG PATH_HSL_MA51
@@ -76,8 +84,7 @@ RUN mkdir -p /tmp/hsl/ma48 \
 
 # Inner layer: Singularity image build (copy from local machine into docker container)
 COPY ./singularity/${RELEASE}/Singularity.intel /tmp
-COPY ./solver /tmp/solver
-COPY ./tarballs /tmp/tarballs
+COPY ./src /tmp/src
 COPY ./bin_parser /home/bin_parser
 
 RUN --security=insecure singularity build /home/teems_solver.sif /tmp/Singularity.intel \
@@ -87,4 +94,4 @@ WORKDIR /home/launchpad
 CMD ["/init"]
 
 # build with:
-#docker buildx build --build-arg PATH_HSL_MA48="tarballs/hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="tarballs/hsl/ma51-1.0.0.tar.gz" --load --allow security.insecure -t teems:beta -f ./docker/development/Dockerfile .
+# docker buildx build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" --load --allow security.insecure -t teems:beta -f ./docker/dev/Dockerfile .
