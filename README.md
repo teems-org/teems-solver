@@ -55,7 +55,7 @@ After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the ta
 ### Solver build
 In order to facilitate the solver build, a prebuilt Docker image with all dependencies is available.
 The user must only link to their local HSL libraries to complete the buld.
-For developers and others preferring the built from scratch, a Dockerfile containing the full build is available as well.
+For developers and others preferring to build from scratch, a Dockerfile containing the full build is available as well.
 The build time for the ``full build" is roughly 1 hour.
 
 #### Prebuilt installation
@@ -67,7 +67,9 @@ The build time for the ``full build" is roughly 1 hour.
 # Git PAT is temporary for access to a private repository
 export GIT_USR="you_git_username"
 export GIT_PAT="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"
+```
 
+```bash
 # clone the repository to a local directory
 git clone https://${GIT_USR}:${GIT_PAT}@github.com/${GIT_USR}/teems-solver.git
 cd teems-solver
@@ -160,5 +162,5 @@ This work is the culmination of many years of efforts and collaborations. The C 
 ## Contact
 
 - Project Maintainer: [Matthew Cantele](mailto:matthew.cantele@protonmail.com)
-- Project Homepage: [https://github.com/username/repository](https://github.com/matthewcantele/teems-solver)
+- Project Homepage: [https://github.com/matthewcantele/teems-solver](https://github.com/matthewcantele/teems-solver)
 - Bug Reports: [https://github.com/username/repository/issues](https://github.com/username/repository/issues)
