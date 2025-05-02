@@ -54,7 +54,7 @@ After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the ta
 
 ### Solver build
 In order to facilitate the solver build, a prebuilt Docker image with all dependencies is available.
-The user must only link to their local HSL libraries to complete the buld.
+The user must only link to their local HSL libraries to complete the build.
 For developers and others preferring to build from scratch, a Dockerfile containing the full build is available as well.
 The build time for the ``full build" is roughly 1 hour.
 
