@@ -9,12 +9,16 @@ This repository contains files necessary to build the optimization solver used w
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+  - [Docker installation](#docker-installation)
+  - [HSL libraries](#hsl-libraries)
+  - [Solver build](#solver-build)
+    -[Layered build](#layered-build)
+    -[Full build](#full-build)
   - [Cloning the Repository](#cloning-the-repository)
   - [Installing Dependencies](#installing-dependencies)
   - [Configuration](#configuration)
 - [Usage](#usage)
 - [Examples](#examples)
-- [API Documentation](#api-documentation)
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
 - [License](#license)
@@ -24,7 +28,7 @@ This repository contains files necessary to build the optimization solver used w
 
 The following must be installed/obtained prior to running the Docker build script:
 
-- Docker
+- Docker https://www.docker.com/get-started/
 - HSL library MA48 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/ma48.html
 - HSL library MA51 (version 1.0.0): https://www.hsl.rl.ac.uk/catalogue/ma51.html
 - HSL library HSL_MC66 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/hsl_mc66.html
@@ -34,40 +38,42 @@ The following must be installed/obtained prior to running the Docker build scrip
 
 Instructions for installing the TEEMS solver.
 
-### Cloning the Repository
+### Docker installation
+Follow the OS-specific installation instructions for the Docker containerization software: https://www.docker.com/get-started/
 
-```bash
-# Clone the repository
-git clone https://github.com/matthewcantele/teems-solver.git
+Linux users must ensure that Docker can be run without invoking sudo: https://docs.docker.com/engine/install/linux-postinstall/.
 
-# Navigate to the project directory
-cd teems-solver
-```
-
-### Obtaining the HSL libraries
+### HSL libraries
 The required HSL libraries must be requested: https://www.hsl.rl.ac.uk
-After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. This directory should contain the following files:
+After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. This directory should now contain the following files:
 
 - ma48-2.2.0.tar.gz
 - ma51-1.0.0.tar.gz
 - hsl_mc66-2.2.0.tar.gz
 - hsl_mp48-2.1.1.tar.gz
 
-### Prepare Docker engine
-Linux users must ensure that Docker can be run without invoking sudo: https://docs.docker.com/engine/install/linux-postinstall/.
-Due to the nature of the nested build, the following command must be run to allow for insecure builds. This is to allow for sudo level privileges within the nested containers (see e.g., https://docs.docker.com/reference/cli/docker/buildx/build/).
+### Solver build
+In order to facilitate the solver build, a prebuilt Docker image with all dependencies is available.
+The user must only link to their local HSL libraries to complete the buld.
+For developers and others preferring the built from scratch, a Dockerfile containing the full build is available as well.
+The build time for the ``full build" is roughly 1 hour.
 
-```bash
-# Enable insecure build
-docker buildx create --use --name insecure-builder --buildkitd-flags '--allow-insecure-entitlement security.insecure'
-```
+#### Prebuilt installation
 
-### Build the solver
+#### Full build installation
 ```bash
 # Builds the solver
 # Build time is approximately 1 hour depending on your local machine specs.
-# Note that you must be at the base of the teem-solver directory
-docker buildx build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" --load --allow security.insecure -t teems:latest -f ./docker/Dockerfile .
+# Git PAT is temporary for access to a private repository
+export GIT_USR="you_git_username"
+export GIT_PAT="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"
+
+# clone the repository to a local directory
+git clone https://${GIT_USR}:${GIT_PAT}@github.com/${GIT_USR}/teems-solver.git
+cd teems-solver
+
+# build the image
+docker build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" -t teems:latest -f ./docker/full_build/Dockerfile .
 ```
 
 Once built, check for the Docker image
