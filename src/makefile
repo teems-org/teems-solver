@@ -6,11 +6,11 @@ include ${PETSC_DIR}/lib/petsc/conf/variables
 include ${PETSC_DIR}/lib/petsc/conf/rules
 
 CC          = mpicc
-MPICHDIR    = /home/teems-solver/lib/mpi
-FC          = $(MPICHDIR)/bin/mpif90 -fopenmp
-F77          = $(MPICHDIR)/bin/mpif77 -fopenmp
+MPICH_DIR    = $(BUILD_DIR)/lib/mpi
+FC          = $(MPICH_DIR)/bin/mpif90 -fopenmp
+F77          = $(MPICH_DIR)/bin/mpif77 -fopenmp
 F77FLAGS   = -I. -I/usr/local/include
-CFLAGS    = -I. -I${PETSC_DIR}/focal/include -I ${PETSC_DIR}/include -fopenmp
+CFLAGS    = -I. -I${PETSC_DIR}/native/include -I ${PETSC_DIR}/include -fopenmp
 FCFLAGS     =
 LDFLAGS     = -fopenmp
 
