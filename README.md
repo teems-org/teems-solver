@@ -61,25 +61,23 @@ The build time for the ``full build" is roughly 1 hour.
 #### Prebuilt installation
 
 #### Full build installation
-```bash
-# Builds the solver
-# Build time is approximately 1 hour depending on your local machine specs.
-# Git PAT is temporary for access to a private repository
-export GIT_USR="you_git_username"
-export GIT_PAT="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"
-```
 
 ```bash
 # clone the repository to a local directory
-git clone https://${GIT_USR}:${GIT_PAT}@github.com/${GIT_USR}/teems-solver.git
+# username is your git username (where you got the invite)
+# password is: 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
+git clone https://github.com/matthewcantele/teems-solver .
 cd teems-solver
+```
 
-# build the image
+```bash
+# Builds the solver
+# Build time is approximately 1 hour depending on your local machine specs.
 docker build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" -t teems:latest -f ./docker/full_build/Dockerfile .
 ```
 
-Once built, check for the Docker image
-```
+Once built, check for the Docker image (teems:latest)
+```bash
 docker image ls
 ```
 
