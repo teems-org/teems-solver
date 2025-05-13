@@ -99,7 +99,6 @@ RUN cd ${BUILD_DIR}/lib \
     # HSL
 RUN cp -r ${BUILD_DIR}/tmp/hsl/ma48 ${BUILD_DIR}/lib \
     && cd ${BUILD_DIR}/lib/ma48 \
-    && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
     && ./configure \
     && make \
     && cp -r ${BUILD_DIR}/tmp/hsl/ma51 ${BUILD_DIR}/lib \
