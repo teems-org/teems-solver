@@ -1,6 +1,6 @@
 all: all-redirect
 
-BUILD_DIR = /home/teems-solver
+BUILD_DIR = /opt/teems-solver
 PETSC_DIR = $(BUILD_DIR)/lib/petsc
 include ${PETSC_DIR}/lib/petsc/conf/variables
 include ${PETSC_DIR}/lib/petsc/conf/rules

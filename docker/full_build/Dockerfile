@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 LABEL org.label-schema.name="TEEMS solver Dockerfile"
-LABEL org.label-schema.version="0.9"
+LABEL org.label-schema.version="0.91"
 LABEL org.label-schema.description="Full Docker build for TEEMS solver"
 LABEL org.label-schema.author="Matthew Cantele <matthew.cantele@protonmail.com>"
 LABEL org.label-schema.maintainer="Matthew Cantele <matthew.cantele@protonmail.com>"
@@ -12,7 +12,7 @@ ARG PATH_HSL_MA48
 ARG PATH_HSL_MA51
 ARG PATH_HSL_MC66
 ARG PATH_HSL_MP48
-ARG BUILD_DIR=/home/teems-solver
+ARG BUILD_DIR=/opt/teems-solver
 ARG OPENMPI_VERSION=5.0.7
 ARG OPENMPI_BASE_VERSION=5.0
 ARG MPICH_VERSION=4.3.0
@@ -29,7 +29,7 @@ COPY ${PATH_HSL_MA51} /tmp/hsl/ma51.tar.gz
 COPY ${PATH_HSL_MC66} /tmp/hsl/mc66.tar.gz
 COPY ${PATH_HSL_MP48} /tmp/hsl/mp48.tar.gz
 COPY ./src ${BUILD_DIR}/src
-COPY ./bin_parser /home/bin_parser
+COPY ./teems-parser /opt/teems-parser
 
 RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && echo 'APT::Install-Recommends "0";' >> /etc/apt/apt.conf.d/00-docker \
@@ -126,9 +126,9 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
     # fix permissions for the bin_parser directory
-    && chown -R 1000:1000 /home/bin_parser && \
-    chmod -R 755 /home/bin_parser
+    && chown -R 1000:1000 /opt/teems-parser && \
+    chmod -R 755 /opt/teems-parser
 
 USER $USERNAME
-WORKDIR /home/launchpad
+WORKDIR /opt/launchpad
 CMD ["/bin/bash"]

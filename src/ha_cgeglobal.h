@@ -14,7 +14,7 @@
 #include <petscsys.h>
 #include <petsctime.h>
 #include <stdbool.h>
-#include </home/teems-solver/lib/petsc/src/mat/impls/aij/seq/aij.h>
+#include </opt/teems-solver/lib/petsc/src/mat/impls/aij/seq/aij.h>
 #include <petscdmda.h>
 #include <omp.h>
 
