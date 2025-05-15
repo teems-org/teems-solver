@@ -45,11 +45,11 @@ Linux users must ensure that Docker can be run without invoking sudo: https://do
 
 ### HSL libraries
 The required HSL libraries must be requested: https://www.hsl.rl.ac.uk
-After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. This directory should now contain the following files:
+After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. Backware compatibility with previous HSL library versions is not guaranteed. This directory should now contain the following files:
 
 - ma48-2.2.0.tar.gz
 - ma51-1.0.0.tar.gz
-- hsl_mc66-2.2.0.tar.gz
+- hsl_mc66-2.2.1.tar.gz
 - hsl_mp48-2.1.1.tar.gz
 
 ### Solver build
@@ -62,21 +62,22 @@ The build time for the ``full build" is roughly 1 hour.
 
 #### Full build installation
 
+Clone the repository to a local directory
+Username is your git username (where you got the invite)
+Password is: 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
 ```bash
-# clone the repository to a local directory
-# username is your git username (where you got the invite)
-# password is: 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
 git clone https://github.com/matthewcantele/teems-solver
 ```
 
+Enter directory
 ```bash
-# enter directory
 cd teems-solver
 ```
 
+Build the solver
+Build time is approximately 1 hour depending on your local machine specs.
 ```bash
-# Builds the solver
-# Build time is approximately 1 hour depending on your local machine specs.
+
 docker build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.0.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" -t teems:latest -f ./docker/full_build/Dockerfile .
 ```
 
