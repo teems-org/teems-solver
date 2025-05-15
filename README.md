@@ -65,7 +65,7 @@ The build time for the ``full build" is roughly 1 hour.
 ```bash
 # clone the repository to a local directory
 # username is your git username (where you got the invite)
-# password is: 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
+# password is: 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
 git clone https://github.com/matthewcantele/teems-solver
 ```
 
