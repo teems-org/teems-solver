@@ -5,3 +5,4 @@ stable/
 standalone
 singularity
 *.code-workspace
+build.log
