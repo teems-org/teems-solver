@@ -4,3 +4,4 @@ tarballs
 stable/
 standalone
 singularity
+*.code-workspace
