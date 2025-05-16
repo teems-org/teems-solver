@@ -91,7 +91,7 @@ RUN cd ${BUILD_DIR}/lib \
     # HSL
 RUN mkdir -p ${BUILD_DIR}/tmp/hsl/ma48 \
     && tar xfz /tmp/hsl/ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma48 \
-    && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
+    #&& cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
     && mkdir -p ${BUILD_DIR}/tmp/hsl/ma51 \
     && tar xfz /tmp/hsl/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma51 \
     && mkdir -p ${BUILD_DIR}/tmp/hsl/mc66 \
