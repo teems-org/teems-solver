@@ -35,8 +35,8 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && echo 'APT::Install-Recommends "0";' >> /etc/apt/apt.conf.d/00-docker \
     && apt-get update \
     && apt-get install -y \
-        automake=1.16.5* \
-        autoconf=2.71* \
+        automake \
+        autoconf \
         libtool \
         build-essential \
         gfortran \
