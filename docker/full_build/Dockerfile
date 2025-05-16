@@ -61,15 +61,6 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     ${BUILD_DIR}/LICENSES/openmpi \
     ${BUILD_DIR}/LICENSES/petsc \
     ${BUILD_DIR}/LICENSES/hsl \
-    # unzip HSL libraries
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma48 \
-    && tar xfz /tmp/hsl/ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma48 \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma51 \
-    && tar xfz /tmp/hsl/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma51 \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/mc66 \
-    && tar xfz /tmp/hsl/mc66.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mc66 \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/mp48 \
-    && tar xfz /tmp/hsl/mp48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mp48 \
     # OPENMPI
     && cd ${BUILD_DIR}/tmp \
     && mkdir openmpi \
@@ -98,17 +89,28 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && python3 ./config/configure.py PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=$PWD --with-debugging=0 --with-mpi-dir=${BUILD_DIR}/lib/mpi --with-afterimage COPTFLAGS="-Ofast -march=native -mtune=native" CXXOPTFLAGS="-Ofast -march=native -mtune=native" FOPTFLAGS="-Ofast -march=native -mtune=native" --with-shared-libraries=0 --with-openmp --with-threadsafety --with-log=0 --with-x=0 --force \
     && make PETSC_DIR=${PWD} PETSC_ARCH=${PETSC_ARCH} all \
     # HSL
+    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma48 \
+    && tar xfz /tmp/hsl/ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma48 \
+    && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
+    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma51 \
+    && tar xfz /tmp/hsl/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma51 \
+    && mkdir -p ${BUILD_DIR}/tmp/hsl/mc66 \
+    && tar xfz /tmp/hsl/mc66.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mc66 \
+    && mkdir -p ${BUILD_DIR}/tmp/hsl/mp48 \
+    && tar xfz /tmp/hsl/mp48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mp48 \
     && cp -r ${BUILD_DIR}/tmp/hsl/ma48 ${BUILD_DIR}/lib \
     && cd ${BUILD_DIR}/lib/ma48 \
-    && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
+    && autoreconf -fi \
     && ./configure \
     && make \
     && cp -r ${BUILD_DIR}/tmp/hsl/ma51 ${BUILD_DIR}/lib \
     && cd ${BUILD_DIR}/lib/ma51 \
+    && autoreconf -fi \
     && ./configure \
     && make \
     && cp -r ${BUILD_DIR}/tmp/hsl/mp48 ${BUILD_DIR}/lib \
     && cd ${BUILD_DIR}/lib/mp48 \
+    && autoreconf -fi \
     && ./configure \
     && make \
     && cp ${BUILD_DIR}/lib/mp48/src/hsl_mp48d.f90 ${BUILD_DIR}/src \
