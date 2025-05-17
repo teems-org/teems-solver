@@ -14,7 +14,7 @@ CFLAGS    = -I. -I${PETSC_DIR}/native/include -I ${PETSC_DIR}/include -fopenmp
 FCFLAGS     =
 LDFLAGS     = -fopenmp
 
-LIBS        =  ${PETSC_KSP_LIB} $(BUILD_DIR)/lib/ma48/src/libma48.a $(BUILD_DIR)/lib/ma51/src/libma51.a
+LIBS        =  ${PETSC_KSP_LIB} $(BUILD_DIR)/lib/ma48/src/.libs/libma48.so $(BUILD_DIR)/lib/ma51/src/.libs/libma51.so
 
 .PHONY : clean
 	-rm -f *.o 
