@@ -94,19 +94,19 @@ RUN cd ${TEEMS_TMP} \
     && mkdir ${BUILD_DIR}/lib/mp48 \
     && tar xfz ${TEEMS_TMP}/mp48.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/mp48 \
     && cd ${BUILD_DIR}/lib/ma48 \
-    #&& autoreconf -fi \
+    && autoreconf -fi \
     && ./configure \
     && make
 RUN ln -s ${BUILD_DIR}/lib/ma48/src/.libs/libma48.so.0.0.0 /usr/local/lib/libma48.so \
     && ln -s ${BUILD_DIR}/lib/ma48/src/.libs/libma48.so.0.0.0 /usr/local/lib/libma48.so.0 \
     && cd ${BUILD_DIR}/lib/ma51 \
-    #&& autoreconf -fi \
+    && autoreconf -fi \
     && ./configure \
     && make \
     && ln -s ${BUILD_DIR}/lib/ma51/src/.libs/libma51.so.0.0.0 /usr/local/lib/libma51.so \
     && ln -s ${BUILD_DIR}/lib/ma51/src/.libs/libma51.so.0.0.0 /usr/local/lib/libma51.so.0 \
     && cd ${BUILD_DIR}/lib/mp48 \
-    #&& autoreconf -fi \
+    && autoreconf -fi \
     && ./configure \
     && make
 COPY ./src ${BUILD_DIR}/src
