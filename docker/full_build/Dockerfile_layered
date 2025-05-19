@@ -86,7 +86,7 @@ RUN cd ${TEEMS_TMP} \
     && mkdir -p ${BUILD_DIR}/LICENSES/hsl \
     && mkdir ${BUILD_DIR}/lib/ma48 \
     && tar xfz ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/ma48 \
-    #&& cp ${TEEMS_TMP}/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
+    && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
     && mkdir ${BUILD_DIR}/lib/ma51 \
     && tar xfz ${TEEMS_TMP}/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/ma51 \
     && mkdir ${BUILD_DIR}/lib/mc66 \
