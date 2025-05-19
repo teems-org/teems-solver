@@ -20,14 +20,15 @@ ARG PETSC_ARCH=native
 ARG USERNAME=teems
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG TEEMS_TMP=/tmp/teems
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="${BUILD_DIR}/lib/mpi/bin:$PATH"
 
-COPY ${PATH_HSL_MA48} /tmp/hsl/ma48.tar.gz
-COPY ${PATH_HSL_MA51} /tmp/hsl/ma51.tar.gz
-COPY ${PATH_HSL_MC66} /tmp/hsl/mc66.tar.gz
-COPY ${PATH_HSL_MP48} /tmp/hsl/mp48.tar.gz
+COPY ${PATH_HSL_MA48} ${TEEMS_TMP}/ma48.tar.gz
+COPY ${PATH_HSL_MA51} ${TEEMS_TMP}/ma51.tar.gz
+COPY ${PATH_HSL_MC66} ${TEEMS_TMP}/mc66.tar.gz
+COPY ${PATH_HSL_MP48} ${TEEMS_TMP}/mp48.tar.gz
 COPY ./src ${BUILD_DIR}/src
 COPY ./teems-parser /opt/teems-parser
 
@@ -52,26 +53,19 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && rm -rf /var/lib/apt/lists/* \
     # Python libraries for bin_parser
     && pip3 install --no-cache-dir pandas toolz numpy Pyarrow \
-    # libraries directory
-    && mkdir -p ${BUILD_DIR}/tmp \
-    ${BUILD_DIR}/lib/ucx \
-    ${BUILD_DIR}/lib/mpi \
-    ${BUILD_DIR}/lib/ma48 \
-    ${BUILD_DIR}/lib/ma51 \
-    ${BUILD_DIR}/LICENSES/openmpi \
-    ${BUILD_DIR}/LICENSES/petsc \
-    ${BUILD_DIR}/LICENSES/hsl \
     # OPENMPI
-    && cd ${BUILD_DIR}/tmp \
+    && cd ${TEEMS_TMP} \
     && mkdir openmpi \
     && cd openmpi \
     && wget https://download.open-mpi.org/release/open-mpi/v${OPENMPI_BASE_VERSION}/openmpi-${OPENMPI_VERSION}.tar.gz \
     && tar xfz openmpi-${OPENMPI_VERSION}.tar.gz --strip-components=1 \
-    && cp ${BUILD_DIR}/tmp/openmpi/LICENSE ${BUILD_DIR}/LICENSES/openmpi \
+    && mkdir -p ${BUILD_DIR}/LICENSES/openmpi \
+    && cp ${TEEMS_TMP}/openmpi/LICENSE ${BUILD_DIR}/LICENSES/openmpi \
+    && mkdir -p ${BUILD_DIR}/lib/mpi \
     && ./configure --prefix=${BUILD_DIR}/lib/mpi \
     && make all install \
     # MPICH
-    && cd ${BUILD_DIR}/tmp \
+    && cd ${TEEMS_TMP} \
     && mkdir mpich \
     && cd mpich \
     && wget https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz \
@@ -83,32 +77,36 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && cd ${BUILD_DIR}/lib \
     && git clone -b release https://gitlab.com/petsc/petsc.git petsc \
     && cd petsc \
+    && mkdir ${BUILD_DIR}/LICENSES/petsc \ 
     && cp ${BUILD_DIR}/lib/petsc/LICENSE ${BUILD_DIR}/LICENSES/petsc \
     && ldconfig \
     && pip3 install --no-cache-dir pandas toolz \
     && python3 ./config/configure.py PETSC_ARCH=${PETSC_ARCH} PETSC_DIR=$PWD --with-debugging=0 --with-mpi-dir=${BUILD_DIR}/lib/mpi --with-afterimage COPTFLAGS="-Ofast -march=native -mtune=native" CXXOPTFLAGS="-Ofast -march=native -mtune=native" FOPTFLAGS="-Ofast -march=native -mtune=native" --with-shared-libraries=0 --with-openmp --with-threadsafety --with-log=0 --with-x=0 --force \
     && make PETSC_DIR=${PWD} PETSC_ARCH=${PETSC_ARCH} all \
     # HSL
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma48 \
-    && tar xfz /tmp/hsl/ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma48 \
+    && cd ${TEEMS_TMP} \
+    && mkdir -p ${BUILD_DIR}/LICENSES/hsl \
+    && mkdir ${BUILD_DIR}/lib/ma48 \
+    && tar xfz ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/ma48 \
     && cp ${BUILD_DIR}/lib/ma48/LICENCE ${BUILD_DIR}/LICENSES/hsl \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/ma51 \
-    && tar xfz /tmp/hsl/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/ma51 \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/mc66 \
-    && tar xfz /tmp/hsl/mc66.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mc66 \
-    && mkdir -p ${BUILD_DIR}/tmp/hsl/mp48 \
-    && tar xfz /tmp/hsl/mp48.tar.gz --strip-components=1 -C ${BUILD_DIR}/tmp/hsl/mp48 \
-    && cp -r ${BUILD_DIR}/tmp/hsl/ma48 ${BUILD_DIR}/lib \
+    && mkdir ${BUILD_DIR}/lib/ma51 \
+    && tar xfz ${TEEMS_TMP}/ma51.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/ma51 \
+    && mkdir ${BUILD_DIR}/lib/mc66 \
+    && tar xfz ${TEEMS_TMP}/mc66.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/mc66 \
+    && mkdir ${BUILD_DIR}/lib/mp48 \
+    && tar xfz ${TEEMS_TMP}/mp48.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/mp48 \
     && cd ${BUILD_DIR}/lib/ma48 \
     && autoreconf -fi \
     && ./configure \
     && make \
-    && cp -r ${BUILD_DIR}/tmp/hsl/ma51 ${BUILD_DIR}/lib \
+    && ln -s ${BUILD_DIR}/lib/ma48/src/.libs/libma48.so.0.0.0 /usr/local/lib/libma48.so \
+    && ln -s ${BUILD_DIR}/lib/ma48/src/.libs/libma48.so.0.0.0 /usr/local/lib/libma48.so.0 \
     && cd ${BUILD_DIR}/lib/ma51 \
     && autoreconf -fi \
     && ./configure \
     && make \
-    && cp -r ${BUILD_DIR}/tmp/hsl/mp48 ${BUILD_DIR}/lib \
+    && ln -s ${BUILD_DIR}/lib/ma51/src/.libs/libma51.so.0.0.0 /usr/local/lib/libma51.so \
+    && ln -s ${BUILD_DIR}/lib/ma51/src/.libs/libma51.so.0.0.0 /usr/local/lib/libma51.so.0 \
     && cd ${BUILD_DIR}/lib/mp48 \
     && autoreconf -fi \
     && ./configure \
@@ -119,13 +117,14 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && cd ${BUILD_DIR}/src \
     && chmod +x mp48_mod.sh \
     && ./mp48_mod.sh \
-    && cp ${BUILD_DIR}/tmp/hsl/mc66/src/hsl_mc66d.f90 ${BUILD_DIR}/src \
-    && cp ${BUILD_DIR}/tmp/hsl/mc66/src/ddeps90.f90 ${BUILD_DIR}/src \
+    && cp ${BUILD_DIR}/lib/mc66/src/hsl_mc66d.f90 ${BUILD_DIR}/src \
+    && cp ${BUILD_DIR}/lib/mc66/src/ddeps90.f90 ${BUILD_DIR}/src \
+    && ldconfig \
     # final build
     && cd ${BUILD_DIR}/src \
     && make \
     && mv ${BUILD_DIR}/src ${BUILD_DIR}/solver \
-    && rm -rf ${BUILD_DIR}/tmp \
+    && rm -rf ${TEEMS_TMP} \
     # non-root user
     && groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
