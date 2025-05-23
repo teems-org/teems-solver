@@ -86,7 +86,7 @@ Once built, check for the Docker image (teems:latest)
 docker image ls
 ```
 
-## Usage
+<!-- ## Usage
 The TEEMS solver is most easily utilized in conjunction with the TEEMS R package (link). It can however be called on solver-ready files. A middle ground option also exists with the in-situ-solve option within the TEEMS R package.
 
 ```bash
@@ -153,7 +153,7 @@ Solution: Steps to resolve the issue.
 #### Issue 2: Error Message Description
 Solution: Steps to resolve the issue.
 
-For more help, please check our [FAQ](docs/FAQ.md) or [open an issue](https://github.com/username/repository/issues).
+For more help, please check our [FAQ](docs/FAQ.md) or [open an issue](https://github.com/username/repository/issues). -->
 
 ## License
 
