@@ -129,9 +129,9 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
     # fix permissions for the bin_parser directory
-    && chown -R 1000:1000 /opt/teems-parser && \
-    chmod -R 755 /opt/teems-parser
+    && chown -R 1000:1000 /opt/teems-parser \
+    && chmod -R 755 /opt/teems-parser 
 
 USER $USERNAME
-WORKDIR /opt/launchpad
+WORKDIR /opt/teems
 CMD ["/bin/bash"]
