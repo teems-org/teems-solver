@@ -1,5 +1,5 @@
-SOLUTION_PATH=/opt/launchpad/out/variables/bin/sol.
-OUTDATA_PATH=/opt/launchpad/out/variables/bin
+SOLUTION_PATH=/opt/teems/out/variables/bin/sol.
+OUTDATA_PATH=/opt/teems/out/variables/bin
 GNU_CSPLIT=csplit
 GCC=gcc
 
