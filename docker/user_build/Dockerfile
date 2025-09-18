@@ -1,13 +1,17 @@
 FROM ubuntu:20.04
 
-LABEL org.label-schema.name="TEEMS solver base layer Dockerfile"
-LABEL org.label-schema.version="0.91"
-LABEL org.label-schema.description="Base Layer Docker build for TEEMS solver"
-LABEL org.label-schema.author="Matthew Cantele <matthew.cantele@protonmail.com>"
-LABEL org.label-schema.maintainer="Matthew Cantele <matthew.cantele@protonmail.com>"
-LABEL org.label-schema.source="https://github.com/matthewcantele/teems-solver"
-LABEL org.label-schema.licenses="GPLv3.0"
+LABEL org.opencontainers.image.name="TEEMS solver base layer Dockerfile"
+LABEL org.opencontainers.image.version="0.91"
+LABEL org.opencontainers.image.description="Base Layer Docker build for TEEMS solver"
+LABEL org.opencontainers.image.author="Matthew Cantele <matthew.cantele@protonmail.com>"
+LABEL org.opencontainers.image.maintainer="Matthew Cantele <matthew.cantele@protonmail.com>"
+LABEL org.opencontainers.image.source="https://github.com/matthewcantele/teems-solver"
+LABEL org.opencontainers.image.licenses="GPLv3.0"
 
+ARG PATH_HSL_MA48
+ARG PATH_HSL_MA51
+ARG PATH_HSL_MC66
+ARG PATH_HSL_MP48
 ARG BUILD_DIR=/opt/teems-solver
 ARG OPENMPI_VERSION=5.0.7
 ARG OPENMPI_BASE_VERSION=5.0
@@ -21,8 +25,10 @@ ARG TEEMS_TMP=/tmp/teems
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="${BUILD_DIR}/lib/mpi/bin:$PATH"
 
-COPY ./src ${BUILD_DIR}/src
-COPY ./teems-parser /opt/teems-parser
+COPY ${PATH_HSL_MA48} ${TEEMS_TMP}/ma48.tar.gz
+COPY ${PATH_HSL_MA51} ${TEEMS_TMP}/ma51.tar.gz
+COPY ${PATH_HSL_MC66} ${TEEMS_TMP}/mc66.tar.gz
+COPY ${PATH_HSL_MP48} ${TEEMS_TMP}/mp48.tar.gz
 
 RUN cd ${TEEMS_TMP} \
     && tar xfz ma48.tar.gz --strip-components=1 -C ${BUILD_DIR}/lib/ma48 \
@@ -59,14 +65,7 @@ RUN cd ${TEEMS_TMP} \
     && cd ${BUILD_DIR}/src \
     && make \
     && mv ${BUILD_DIR}/src ${BUILD_DIR}/solver \
-    && rm -rf ${TEEMS_TMP} \
-    # non-root user
-    && groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    # permissions for the bin_parser directory
-    && chown -R 1000:1000 /opt/teems-parser \
-    && chmod -R 755 /opt/teems-parser 
+    # cleanup
+    && rm -rf ${TEEMS_TMP}
 
-USER $USERNAME
-WORKDIR /opt/teems
 CMD ["/bin/bash"]
