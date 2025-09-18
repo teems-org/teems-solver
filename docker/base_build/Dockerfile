@@ -46,6 +46,7 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     # Python libraries for bin_parser
     && pip3 install --no-cache-dir pandas toolz numpy Pyarrow \
     # OPENMPI
+    && mkdir ${TEEMS_TMP} \
     && cd ${TEEMS_TMP} \
     && mkdir openmpi \
     && cd openmpi \
