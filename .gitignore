@@ -1,8 +1,5 @@
 archive/
-dev/
 tarballs
-stable/
-standalone
 singularity
 *.code-workspace
-build.log
+*.log
