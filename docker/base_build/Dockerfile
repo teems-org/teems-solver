@@ -13,9 +13,6 @@ ARG OPENMPI_VERSION=5.0.7
 ARG OPENMPI_BASE_VERSION=5.0
 ARG MPICH_VERSION=4.3.0
 ARG PETSC_ARCH=native
-ARG USERNAME=teems
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
 ARG TEEMS_TMP=/tmp/teems
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -81,17 +78,9 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
     && mkdir ${BUILD_DIR}/lib/ma51 \
     && mkdir ${BUILD_DIR}/lib/mc66 \
     && mkdir ${BUILD_DIR}/lib/mp48 \
-    # non-root user
-    && groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    # permissions for the bin_parser directory
-    && chown -R 1000:1000 /opt/teems-parser \
-    && chmod -R 755 /opt/teems-parser \
     # cleanup
     && rm -rf ${TEEMS_TMP} \
     && apt-get autoremove -y \
     && apt-get autoclean
 
-USER $USERNAME
-WORKDIR /opt/teems
 CMD ["/bin/bash"]

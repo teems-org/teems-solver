@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM teems_base:beta
 
 LABEL org.opencontainers.image.name="TEEMS solver base layer Dockerfile"
 LABEL org.opencontainers.image.version="0.91"
@@ -65,7 +65,15 @@ RUN cd ${TEEMS_TMP} \
     && cd ${BUILD_DIR}/src \
     && make \
     && mv ${BUILD_DIR}/src ${BUILD_DIR}/solver \
+    # non-root user
+    && groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    # permissions for the bin_parser directory
+    && chown -R 1000:1000 /opt/teems-parser \
+    && chmod -R 755 /opt/teems-parser \
     # cleanup
     && rm -rf ${TEEMS_TMP}
 
+USER $USERNAME
+WORKDIR /opt/teems
 CMD ["/bin/bash"]
