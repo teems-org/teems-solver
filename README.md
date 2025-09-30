@@ -41,7 +41,7 @@ Instructions for installing the TEEMS solver.
 ### Docker installation
 Follow the OS-specific installation instructions for the Docker containerization software: https://www.docker.com/get-started/
 
-Linux users must ensure that Docker can be run without invoking sudo: https://docs.docker.com/engine/install/linux-postinstall/.
+Linux users ***must*** ensure that Docker can be run without invoking sudo: https://docs.docker.com/engine/install/linux-postinstall/.
 
 ### HSL libraries
 The required HSL libraries must be requested: https://www.hsl.rl.ac.uk
@@ -56,7 +56,7 @@ After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the ta
 In order to facilitate the solver build, a prebuilt Docker image with all dependencies is available.
 The user must only link to their local HSL libraries to complete the build.
 For developers and others preferring to build from scratch, a Dockerfile containing the full build is available as well.
-The build time for the ``full build" is roughly 1 hour.
+The build time for the expedited build is about 5 minutes while the full build takes about 40 minutes depending on your system.
 
 #### Prebuilt installation
 
