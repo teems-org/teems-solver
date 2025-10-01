@@ -53,18 +53,16 @@ After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the ta
 - hsl_mp48-2.1.1.tar.gz
 
 ### Solver build
-In order to facilitate the solver build, a prebuilt Docker image with all dependencies is available.
+In order to facilitate the solver build, a prebuilt Docker image with all open-source dependencies is available.
 The user must only link to their local HSL libraries to complete the build.
 For developers and others preferring to build from scratch, a Dockerfile containing the full build is available as well.
-The build time for the expedited build is about 5 minutes while the full build takes about 40 minutes depending on your system.
+The build time for the expedited build is about 5 minutes while the full build takes up to 40 minutes depending on your system.
 
 #### Prebuilt installation
 
 #### Full build installation
 
 Clone the repository to a local directory
-Username is your git username (where you got the invite)
-Password is: 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
 ```bash
 git clone https://github.com/matthewcantele/teems-solver
 ```
