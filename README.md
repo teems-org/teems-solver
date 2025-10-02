@@ -29,6 +29,7 @@ This repository contains files necessary to build the optimization solver used w
 The following must be installed/obtained prior to running the Docker build script:
 
 - Docker https://www.docker.com/get-started/
+- Git
 - HSL library MA48 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/ma48.html
 - HSL library MA51 (version 1.0.0): https://www.hsl.rl.ac.uk/catalogue/ma51.html
 - HSL library HSL_MC66 (version 2.2.0): https://www.hsl.rl.ac.uk/catalogue/hsl_mc66.html
@@ -58,31 +59,40 @@ The user must only link to their local HSL libraries to complete the build.
 For developers and others preferring to build from scratch, a Dockerfile containing the full build is available as well.
 The build time for the expedited build is about 5 minutes while the full build takes up to 40 minutes depending on your system.
 
-#### Prebuilt installation
-
-#### Full build installation
-
-Clone the repository to a local directory
+1. Clone the repository and enter directory:
 ```bash
-git clone https://github.com/matthewcantele/teems-solver
-```
-
-Enter directory
-```bash
+git clone --depth 1 https://github.com/teems-org/teems-solver.git
 cd teems-solver
 ```
 
-Build the solver
-Build time is approximately 1 hour depending on your local machine specs.
-```bash
-
-docker build --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz" --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" -t teems:latest -f ./docker/full_build/Dockerfile_layered . 2>&1 | tee build.log
-```
-
-Once built, check for the Docker image (teems:latest)
+2. Copy your local HSL libraries into the empty hsl/ directory at /teems-solver/hsl
+3. Build from the base directory of the cloned repository (/teems-solver)
+4. Once built, check for the Docker image (teems:latest)
 ```bash
 docker image ls
 ```
+
+#### Prebuilt installation
+
+```bash
+docker build -t teems:latest
+  --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz"
+  --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz"
+  --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz"
+  --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz"
+  .
+```
+
+#### Full build installation
+```bash
+docker build -t teems:latest
+  --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz"
+  --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz"
+  --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz"
+  --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz"
+  -f ./docker/full_build/Dockerfile
+```
+
 
 <!-- ## Usage
 The TEEMS solver is most easily utilized in conjunction with the TEEMS R package (link). It can however be called on solver-ready files. A middle ground option also exists with the in-situ-solve option within the TEEMS R package.
