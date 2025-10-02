@@ -67,19 +67,15 @@ cd teems-solver
 
 2. Copy your local HSL libraries into the empty hsl/ directory at /teems-solver/hsl
 3. Build from the base directory of the cloned repository (/teems-solver)
-4. Once built, check for the Docker image (teems:latest)
-```bash
-docker image ls
-```
 
 #### Prebuilt installation
 
 ```bash
-docker build -t teems:latest
-  --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz"
-  --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz"
-  --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz"
-  --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz"
+docker build -t teems:latest \
+  --build-arg PATH_HSL_MA48="hsl/ma48-2.2.0.tar.gz" \
+  --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" \
+  --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz" \
+  --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" \
   .
 ```
 
@@ -93,6 +89,10 @@ docker build -t teems:latest
   -f ./docker/full_build/Dockerfile
 ```
 
+4. Once built, check for the Docker image (teems:latest)
+```bash
+docker image ls
+```
 
 <!-- ## Usage
 The TEEMS solver is most easily utilized in conjunction with the TEEMS R package (link). It can however be called on solver-ready files. A middle ground option also exists with the in-situ-solve option within the TEEMS R package.
