@@ -86,7 +86,8 @@ docker build -t teems:latest \
   --build-arg PATH_HSL_MA51="hsl/ma51-1.0.0.tar.gz" \
   --build-arg PATH_HSL_MC66="hsl/hsl_mc66-2.2.1.tar.gz" \
   --build-arg PATH_HSL_MP48="hsl/hsl_mp48-2.1.1.tar.gz" \
-  -f ./docker/full_build/Dockerfile
+  -f ./docker/full_build/Dockerfile \
+  .
 ```
 
 4. Once built, check for the Docker image (teems:latest)
