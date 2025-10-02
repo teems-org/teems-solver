@@ -46,12 +46,7 @@ Linux users ***must*** ensure that Docker can be run without invoking sudo: http
 
 ### HSL libraries
 The required HSL libraries must be requested: https://www.hsl.rl.ac.uk
-After recieving the tarballs for MA48, MA51, HSL_MC66, and HSL_MP48, copy the tarballs (e.g., ma48-2.2.0tar.gz) into the empty hsl folder at /teems-solver/hsl. Backware compatibility with previous HSL library versions is not guaranteed. This directory should now contain the following files:
-
-- ma48-2.2.0.tar.gz
-- ma51-1.0.0.tar.gz
-- hsl_mc66-2.2.1.tar.gz
-- hsl_mp48-2.1.1.tar.gz
+Backware compatibility with previous HSL library versions is not guaranteed. 
 
 ### Solver build
 In order to facilitate the solver build, a prebuilt Docker image with all open-source dependencies is available.
@@ -65,8 +60,14 @@ git clone --depth 1 https://github.com/teems-org/teems-solver.git
 cd teems-solver
 ```
 
-2. Copy your local HSL libraries into the empty hsl/ directory at /teems-solver/hsl
-3. Build from the base directory of the cloned repository (/teems-solver)
+2. Copy your local HSL libraries into the empty `hsl/` directory at `/teems-solver/hsl`. This directory should now contain the following files:
+
+- ma48-2.2.0.tar.gz
+- ma51-1.0.0.tar.gz
+- hsl_mc66-2.2.1.tar.gz
+- hsl_mp48-2.1.1.tar.gz
+
+3. Build from the base directory of the cloned repository (`/teems-solver`)
 
 #### Prebuilt installation
 
