@@ -1,4 +1,4 @@
-FROM teems_base:beta
+FROM matthewcantele/teems_base:latest
 
 LABEL org.opencontainers.image.name="TEEMS solver base layer Dockerfile"
 LABEL org.opencontainers.image.version="0.91"
