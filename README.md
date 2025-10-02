@@ -12,7 +12,7 @@ This repository contains files necessary to build the optimization solver used w
   - [Docker installation](#docker-installation)
   - [HSL libraries](#hsl-libraries)
   - [Solver build](#solver-build)
-    -[Prebuilt installation](#prebuilt-installation)
+    -[Expedited installation](#expedited-installation)
     -[Full build installation](#full-build-installation)
 - [License](#license)
 - [Code authorship](#code-authorship)
@@ -63,7 +63,7 @@ cd teems-solver
 
 3. Build from the base directory of the cloned repository (`/teems-solver`)
 
-#### Prebuilt installation
+#### Expedited installation
 
 ```bash
 docker build -t teems:latest \
