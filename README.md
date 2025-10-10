@@ -50,7 +50,7 @@ The build time for the expedited build is about 5 minutes while the full build t
 
 1. Clone the repository and enter directory:
 ```bash
-git clone --depth 1 https://github.com/teems-org/teems-solver.git
+git clone --depth 1 https://github.com/teemsphere/teems-solver.git
 cd teems-solver
 ```
 
